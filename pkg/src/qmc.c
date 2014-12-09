@@ -14,25 +14,11 @@
 */
 
 #include "qmc.h"
-#include "lhs.h"
-#include "sal.h"
-#include "halton.h"
+
 #include "rhalton.h"
-#include "ahalton.h"
-#include "scrahalton.h"
-#include "dahalton.h"
-//#include "kwhalton.h"
-#include "permhalton.h"
-#include "rpermhalton.h"
-//#include "rkwhalton.h"
-#include "shift.h"
-#include "mc.h"
-#include "faure.h"
+
 #include "korobov.h"
-#include "sobol.h"
-#include "badsobol.h"
-#include "combinedpk.h"
-#include "ghalton.h"
+
 #include "randqmc.h"
 
 
@@ -52,13 +38,6 @@ int InitQMC ()
  
   switch ((int)args[QMC_METHOD])
     {
-    case MONTECARLO_METHOD:
-     
-      retvalue = InitMC(args[QMC_DIMEN]);
-      ResetQMC = ResetMC;
-      FreeMethod = FreeMC;
-      QMC = MC;      
-		break;
     
     case KOROBOV_METHOD:
       retvalue = InitKorobov (args[QMC_DIMEN], args[QMC_NPOINTS],
@@ -68,166 +47,23 @@ int InitQMC ()
       FreeMethod = FreeKorobov;
       break;
     
-    case PKOROBOV_METHOD:
-      retvalue = InitCpKorobov (args[QMC_DIMEN], args[QMC_NPOINTS],
-                             args[QMC_NPARAMS+1], &args[QMC_NPARAMS+2]);
-      QMC = CpKorobov;
-      ResetQMC = ResetCpKorobov;
-      FreeMethod = FreeCpKorobov;
-      break;
-  
-    case SOBOL_METHOD:
-      retvalue = InitSobol (args[QMC_DIMEN], args[QMC_NPOINTS], args[QMC_NPARAMS+1]);
-      QMC = Sobol;
-      ResetQMC = ResetSobol;
-      FreeMethod = FreeSobol;
-      break;
-
-    case BADSOBOL_METHOD:
-      retvalue = InitBadSobol (args[QMC_DIMEN], args[QMC_NPOINTS], args[QMC_NPARAMS+1]);
-      QMC = BadSobol;
-      ResetQMC = ResetBadSobol;
-      FreeMethod = FreeBadSobol;
-      break;
     
-    case SHIFTNET_METHOD:
-      retvalue = InitShiftNet (args[QMC_DIMEN], args[QMC_NPOINTS]);
-      QMC = ShiftNet;
-      FreeMethod = FreeShiftNet;
-      ResetQMC = ResetShiftNet;
-      break;
-   
-    case GFAURETT94_METHOD:
-    case GFAUREF01_METHOD:
-    case FAURE_METHOD:
-    case DIAFAURE_METHOD:
-    case DIAFAURERAND_METHOD:
-    case GENGFAURE_METHOD:
-      //printf("method is %f\n",args[QMC_METHOD]);
-      retvalue = InitFaure (args[QMC_DIMEN], args[QMC_NPARAMS+1],
-                            args[QMC_METHOD], args[QMC_NPOINTS], 
-                            args[QMC_NPARAMS+2], args[QMC_NPARAMS+3]);
-      QMC = Faure;
-      FreeMethod = FreeFaure; 
-      ResetQMC = ResetFaure;
-      ResetQMC2 = ResetFaurePts;
-      break;
-    case HALTON_METHOD:
-      retvalue = InitHalton (args[QMC_DIMEN],args[QMC_NPARAMS+1], args[QMC_NPARAMS+2]);
-      if (args[QMC_NPARAMS+1]<8)
-        QMC = Halton;
-      else{
-	QMC = FaurePermHalton;
-        printf("got it");
-      }
-      FreeMethod = FreeHalton;
-      ResetQMC = ResetHalton;
-      break;
+    
 
 
-    case GHALTON_METHOD:
-      retvalue = InitGHalton (args[QMC_DIMEN]);
-      QMC = GHalton;
-      FreeMethod = FreeGHalton;
-      ResetQMC = ResetGHalton;
-      break;
+    
 
     case RHALTON_METHOD:
       retvalue = InitRHalton (args[QMC_DIMEN],args[QMC_NPARAMS+1], args[QMC_NPARAMS+2]);
-      if( args[QMC_NPARAMS+1] <8)
-        QMC = RHalton;
-      else
-        QMC = RFaurePermHalton;
+      
+      QMC = RHalton; //args[QMC_NPARAMS+1] =1 or 6 depending on original or gene.
+      
       FreeMethod = FreeRHalton;
       ResetQMC = ResetRHalton;
       break;
 
-    case AHALTON_METHOD:
-      retvalue = InitAHalton (args[QMC_DIMEN],args[QMC_NPARAMS+1]);
-      QMC = AHalton;
-      FreeMethod = FreeAHalton;
-      ResetQMC = ResetAHalton;
-      break;
-
-    case SCRAHALTON_METHOD:
-      retvalue = InitScrAHalton (args[QMC_DIMEN],args[QMC_NPARAMS+1]);
-      QMC = ScrAHalton;
-      FreeMethod = FreeScrAHalton;
-      ResetQMC = ResetScrAHalton;
-      break;
-
-    case DAHALTON_METHOD:
-      retvalue = InitDAHalton (args[QMC_DIMEN],args[QMC_NPARAMS+1]);
-      QMC = DAHalton;
-      FreeMethod = FreeDAHalton;
-      ResetQMC = ResetDAHalton;
-      break;
-      /*
-    case KWHALTON_METHOD:
-      retvalue = InitKWHalton (args[QMC_DIMEN],args[QMC_NPARAMS+1]);
-      QMC = KWHalton;
-      FreeMethod = FreeKWHalton;
-      ResetQMC = ResetKWHalton;
-      break;
-
-    case RKWHALTON_METHOD:
-      retvalue = InitRKWHalton (args[QMC_DIMEN],args[QMC_NPARAMS+1]);
-      QMC = RKWHalton;
-      FreeMethod = FreeRKWHalton;
-      ResetQMC = ResetRKWHalton;
-      break;*/ 
-    case PERMHALTON_METHOD:
-      retvalue = InitPermHalton (args[QMC_DIMEN],args[QMC_NPARAMS+1]);
-      QMC = PermHalton;
-      FreeMethod = FreePermHalton;
-      ResetQMC = ResetPermHalton;
-      break;
-    case RPERMHALTON_METHOD:
-      retvalue = InitRPermHalton (args[QMC_DIMEN],args[QMC_NPARAMS+1]);
-      QMC = RPermHalton;
-      FreeMethod = FreeRPermHalton;
-      ResetQMC = ResetRPermHalton;
-      break;
-    case SALZBURG_METHOD:
-      retvalue = InitSalzburg(args[QMC_DIMEN],args[QMC_NPARAMS+2], args[QMC_NPARAMS+1], 
-	                          args[QMC_NPARAMS+3], args[QMC_NPARAMS+4]);
-      QMC = Salzburg;
-      FreeMethod = FreeSalzburg;
-      ResetQMC = ResetSalzburg;
-      break;
-
-    case GENERIC_NET_METHOD:
-      retvalue = InitGenericNet(args[QMC_DIMEN],args[QMC_NPARAMS+2], args[QMC_NPARAMS+1]);
-      if (args[QMC_NPARAMS+2] == 2) 
-        QMC = SalzburgBase2;
-      else
-        QMC = Salzburg;
-      FreeMethod = FreeSalzburg;
-      ResetQMC = ResetSalzburg;
-      break;
-        
-    case LHS_METHOD:
-      retvalue = InitLHS(args[QMC_DIMEN], args[QMC_NPOINTS]);
-      QMC = LHS;
-      FreeMethod = FreeLHS;
-      ResetQMC = ResetLHS;
-      break;
     
-    case MLHS_METHOD:
-      retvalue = InitLHS(args[QMC_DIMEN], args[QMC_NPOINTS]);
-      QMC = MLHS;
-      FreeMethod = FreeLHS;
-      ResetQMC = ResetLHS;
-      break;
-
-    case ILHS_METHOD:
-      retvalue = InitLHS(args[QMC_DIMEN], args[QMC_NPOINTS]);
-      QMC = ILHS;
-      FreeMethod = FreeLHS;
-      ResetQMC = ResetLHS;
-      break;
-
-	 default:
+      default:
       retvalue = 0;
       QMC = 0;
       ResetQMC = 0;
