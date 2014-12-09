@@ -7,6 +7,7 @@ Generalized Halton:
 5th param: number of randomizations (m)
 6th and 7th param: must be set to 2
 8th param: 1 if original Halton and 6 if generalized Halton with Faure & Lemixu 2009 factors
+9th param: skip of Y (will skip the first Y points)
 
 --> see an example in rhalton.dat
 
