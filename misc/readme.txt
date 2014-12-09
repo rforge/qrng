@@ -1,0 +1,31 @@
+Generalized Halton: 
+
+1st line (method) 18
+2nd line =dimension
+3rd line = number of points (n)
+4th param = 1 (as we are currently forcing a random digital shift)
+5th param: number of randomizations (m)
+6th and 7th param: must be set to 2
+8th param: 1 if original Halton and 6 if generalized Halton with Faure & Lemixu 2009 factors
+
+--> see an example in rhalton.dat
+
+Korobov (or more generally, rank-1 rule)
+
+1st line (method) = 2
+2nd line dimension
+3rd line number of points
+4th param: 1 for no randomization, 2 for shift (3 would do a digital shift)
+5th param: number of randomizations
+6th and 7th param: must be set to 2
+8th param: generator
+9th parameter: 
+**1 if n is prime and Korobov rule
+**2 if n is a power of 2 and Korobov rule
+**3 if we want to use the extensible construction
+**4 if we want a rank-1 rule: need to put the generating vector in rank1.dat
+**5 if we want an extensible rank-1 rule: generating vector must be in rank.dat
+
+--> see an example in kor.dat
+
+

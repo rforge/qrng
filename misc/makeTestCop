@@ -1,0 +1,24 @@
+CC = gcc
+OBJECTS = FunctionQMC.o DistCop.o dcdflib.o
+
+all: ${OBJECTS} 
+	${CC} ${OBJECTS} fctTestCopula.c -lm -L. -lqmc -o fctTestCopula
+
+#this rule makes all the object files for the QMC executable
+
+FunctionQMC.o: FunctionQMC.c FunctionQMC.h DistCop.h
+	${CC} -c FunctionQMC.c -o FunctionQMC.o
+
+DistCop.o: DistCop.c DistCop.h
+	${CC} -c DistCop.c -o DistCop.o
+
+dcdflib.o: dcdflib.c cdflib.h
+	${CC} -c dcdflib.c -o dcdflib.o
+
+
+
+#this cleans up the directory
+
+clean:
+	rm -f *.o core *~ 
+
