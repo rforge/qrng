@@ -1,0 +1,17 @@
+CC = gcc
+OBJECTS = rankone.o
+
+all: ${OBJECTS} 
+	${CC} ${OBJECTS} TestNewKor.c -lm -o testNewKor
+
+#this rule makes all the object files for the QMC executable
+
+rankone.o: rankone.c rankone.h
+	${CC} -c rankone.c -o rankone.o
+
+
+#this cleans up the directory
+
+clean:
+	rm -f *.o core *~ 
+
