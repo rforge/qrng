@@ -26,8 +26,8 @@ void korobov(int n, int d, int *generator, double *res)
 	}
 
 	/* Generate points */
-	for(j=0; j<d; j++){
-		for(i=1; i<n; i++){ /* omit i=0 as done in init above */
+	for(i=1; i<n; i++){ /* omit i=0 as done in init above */
+		for(j=0; j<d; j++){
 			ij = j*n + i;
 			res[ij] = res[j*n + (i-1)] + generator_n[j];
 			if(res[ij] > 1) res[ij] = res[ij] - 1.0;
