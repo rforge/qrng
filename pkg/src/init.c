@@ -5,11 +5,12 @@
 #include <R_ext/Rdynload.h>
 
 #include "korobov.h"
+#include "ghalton.h"
 
 
 static const R_CallMethodDef callMethods[] = {
-	{"korobov_", (DL_FUNC) &korobov_, 3},
-        {NULL, NULL, 0}
+	{"korobov_", (DL_FUNC) &korobov_, 3}, {NULL, NULL, 0},
+	{"ghalton_", (DL_FUNC) &ghalton_, 3}, {NULL, NULL, 0}
 };
 
 void R_init_qrng(DllInfo *dll)

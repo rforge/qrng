@@ -1,17 +1,16 @@
-/* C function for computing the Korobov sequence ******************************/
+/* C function for computing a Korobov sequence ********************************/
 
 #include "korobov.h"
 
 
 /**
- * Generate n points of a d-dimensional Korobov sequence
- *
+ * @title Generate n Points of a d-dimensional Korobov Sequence
  * @param n number of points
  * @param d dimension
  * @param generator vector of generator points
  * @param res pointer to the result matrix
  * @return void
- * @author Marius Hofert based on C. Lemieux's RandQMC's GenRank1
+ * @author Marius Hofert based on C. Lemieux's RandQMC
  */
 void korobov(int n, int d, int *generator, double *res)
 {
@@ -39,8 +38,7 @@ void korobov(int n, int d, int *generator, double *res)
 }
 
 /**
- * R interface to C for generating a Korobov sequence
- *
+ * @title R Interface to C for Generating a Korobov Sequence
  * @param n number of points
  * @param d dimension
  * @param generator vector of generator points
