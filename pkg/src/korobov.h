@@ -7,7 +7,6 @@
 #include <Rinternals.h>
 #include <Rmath.h>
 
-/* For Korobov */
 void korobov(int n, int d, int *generator, double *res);
 SEXP korobov_(SEXP n, SEXP d, SEXP generator);
 

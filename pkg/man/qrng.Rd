@@ -7,7 +7,7 @@
 }
 \usage{
 korobov(n, d, generator)
-ghalton(n, d, n.random)
+ghalton(n, d, method=c("generalized", "halton"))
 }
 \arguments{
   \item{n}{Number \eqn{n} of points to be generated \eqn{\ge 2}{>= 2}.}
@@ -16,8 +16,8 @@ ghalton(n, d, n.random)
     (in which case it is appropriately extended to length \eqn{d}). All numbers
     must be in \eqn{\{1,\dots,n\}}{{1,...,n}} and must be (coercible to)
     integers.}
-  \item{n.random}{An \code{\link{integer}} (or coercible to one) giving
-    the number of randomization points.}
+  \item{method}{A \code{\link{character}} string indicating which
+    sequence is generated, generalized Halton or (plain) Halton.}
 }
 \value{
   \code{korobov()} and \code{ghalton()} return an
@@ -25,12 +25,23 @@ ghalton(n, d, n.random)
   is returned.
 }
 \details{
-  The choice of parameters can be crucial for the quality of
-  these quasi-random sequences (only basic sanity checks are
-  conducted). Also note that these procedures call fast C code.
+  Note that these procedures call fast C code.
+
+  The choice of parameters for \code{korobov()} is crucial for the quality of
+  this quasi-random sequence (only basic sanity checks are
+  conducted). For more details, see l'Ecuyer and Lemieux (2000).
+
+  For \eqn{d\ge360}{d>=360}, the generalized Halton sequences uses the
+  identity to TODO.
 }
 \author{Marius Hofert}
 \references{
+  Faure, H., Lemieux, C. (2009). Generalized Halton Sequences in 2008:
+  A Comparative Study. \emph{ACM-TOMACS} \bold{19}(4), Article 15.
+
+  l'Ecuyer, P., Lemieux, C. (2000). Variance Reduction via Lattice
+  Rules. \emph{Stochastic Models and Simulation}, 1214--1235.
+
   Lemieux, C., Cieslak, M., Luttmer, K. (2004). RandQMC User's guide.
   See https://www.math.uwaterloo.ca/~clemieux/randqmc/guide.pdf
 }
@@ -41,6 +52,10 @@ n <- 2^10
 d <- 4
 generator <- 17
 u <- korobov(n, d=d, generator=generator)
+pairs(u, gap=0, pch=".", labels=as.expression(
+      sapply(1:d, function(j) bquote(italic(u[.(j)])))))
+
+u <- ghalton(n, d)
 pairs(u, gap=0, pch=".", labels=as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))
 }

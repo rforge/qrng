@@ -48,9 +48,9 @@ void korobov(int n, int d, int *generator, double *res)
 SEXP korobov_(SEXP n, SEXP d, SEXP generator)
 {
     /* Input parameters */
-    int n_ = asInteger(n); /* numeric(1); convert double to integer */
+    int n_ = asInteger(n); /* numeric(1) */
     int d_ = asInteger(d); /* numeric(1) */
-    int *generator_ = INTEGER(coerceVector(generator, INTSXP)); /* numeric(d); INTEGER() converts integer SEXP to int * */
+    int *generator_ = INTEGER(coerceVector(generator, INTSXP)); /* numeric(d) */
 
     /* Create result object */
     SEXP res = PROTECT(allocMatrix(REALSXP, n_, d_)); /* (n,d)-matrix */

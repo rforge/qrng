@@ -26,20 +26,18 @@ korobov <- function(n, d, generator)
 ##' @title Generalized Halton sequence
 ##' @param n number of points
 ##' @param d dimension
-##' @param n.random
+##' @param method character string indicating which sequence is generated
+##'        (generalized Halton or (plain) Halton)
 ##' @return an (n, d)-matrix (an n-vector if d=1) containing the
 ##'         quasi-random sequence
 ##' @author Marius Hofert
-ghalton <- function(n, d, n.random)
+ghalton <- function(n, d, method=c("generalized", "halton"))
 {
-    stopifnot(n >= 1, d >= 1, n.random >= 0)
+    stopifnot(n >= 1, d >= 1)
+    method <- match.arg(method)
     if(n > 2^32-1)
         stop("'n' has to be <= 2^32-1")
-    if(d > 360)
-        stop("'d' has to be <= 360")
-    if(n.random > 2^31-1)
-        stop("'n.random' has to be <= 2^31-1")
-    ghalton_ <- NULL # to make CRAN check happy (for some reason not required for korobov())
-    u <- .Call(ghalton_, n, d, n.random)
+    ## ghalton_ <- NULL # to make CRAN check happy (for some reason not required for korobov())
+    u <- .Call(ghalton_, n, d, method)
     if(d == 1) as.vector(u) else u
 }
