@@ -55,7 +55,7 @@ n <- 1021 # prime
 d <- 4 # dimension
 
 ## Korobov's sequence
-generator <- 76
+generator <- 76 # see l'Ecuyer and Lemieux
 u <- korobov(n, d=d, generator=generator)
 pairs(u, gap=0, pch=".", labels=as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))

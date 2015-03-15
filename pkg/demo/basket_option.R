@@ -6,9 +6,6 @@
 ## load packages
 require(qrng)
 
-## set seed for reproducibility
-set.seed(271)
-
 
 ### 1) Functions ###############################################################
 
@@ -17,13 +14,15 @@ set.seed(271)
 ##' @param N notional of the option
 ##' @param S0 a d-vector with stocks' current prices
 ##' @param S a (n, d)-matrix with stocks' final prices
-##' @param optiontype string "Call" or "Put"
+##' @param type string "call" or "put"
+##' @param method option type; available are "basket", "worst-of" and "best-of"
+##'        option
 ##' @return n-vector values of the basket option's payoff function
 ##' @author Mathieu Cambou, Marius Hofert, Christiane Lemieux
 ##' @note This is the undiscounted value of the payoff function
 ##'       evaluated at the stock prices at maturity.
 payoff <- function(K, N, S0, S, type = c("call", "put"),
-                   method = c("basket", "best", "worst"))
+                   method = c("basket", "worst.of", "best.of"))
 {
   stopifnot(K >= 0, N >= 0, S0 >= 0, S >= 0,
             length(S0) == ncol(S))
@@ -33,55 +32,42 @@ payoff <- function(K, N, S0, S, type = c("call", "put"),
                  "basket" = {
                      rowMeans(t(t(S)/S0))
                  },
-                 "best" = {
-                     apply(t(t(S)/S0), 1, max)
-                 },
                  "worst" = {
                      apply(t(t(S)/S0), 1, min)
+                 },
+                 "best" = {
+                     apply(t(t(S)/S0), 1, max)
                  },
                  stop("Wrong 'method'"))
   N * pmax(0, if(type=="call") perf - K else K - perf)
 }
 
-##TODO:
-##' @title Payoff Function: Worst-Of Option
-##' @return n-vector values of the worst-of option's payoff function
-
-##' @title Payoff Function: Best-Of Option
-##' @return n-vector values of the best-of option's payoff function
-
-
-#TODO: the below function can be generalized to:
-# - allow for correlations between the GBMs
-# - allow for sampling a full path to use it for path-dependent options
-##' @title Produces samples of a d dimensional Geometric Brownian motion (GBM)
-##'        from samples of uniforms, given daily parameters and a time horizon
-##'        (in number of days)
-##' @param u (nxd)-matrix sample of uniforms
-##' @param S0 d-vector with initial GBMs levels
-##' @param sigma d-vector containing the volatilities of the GBMs
+##' @title Produces Samples of a d-dimensional Geometric Brownian Motion (GBM)
+##' @param u (n,d)-matrix sample of uniforms
+##' @param S0 d-vector with initial GBM levels
+##' @param sigma d-vector containing the (daily) volatilities of the GBMs
 ##' @param mu d-vector containing the drifts of the GBMs
 ##' @param T time horizon of the samples (in number of days)
-##' @return (nxd)-matrix of GBM samples
+##' @return (n,d)-matrix of GBM samples (d independent BMs)
 ##' @author Mathieu Cambou, Christiane Lemieux, Marius Hofert
-generate_GBM <- function(u, S0, sigma, mu, T)
+##' @note Further generalizations are possible:
+##'       - allow for correlations between the GBMs
+##'       - sample a full path for pricing path-dependent options
+rGeoBM <- function(u, S0, sigma, mu, T)
 {
-  stopifnot(length(sigma) == length(r),
-            length(sigma) == length(S0),
-            T >= 0, all(sigma >= 0), all(mu >= 0))
-
-  log.drift <- (mu - 0.5 * sigma * sigma)*T # (1xd)
-  # log.diffusion <- sweep(qnorm(u), 2, sigma, '*') * sqrt(T) # (nxd)
-  log.diffusion <- t(t(qnorm(u))*sigma)  # (nxd)
-  log. <- log.drift + log.diffusion  # (nxd)
-  t(t(exp(log.))*S0) # (nxd)
+  stopifnot(0 < u, u < 1, (d <- length(S0)) == length(sigma), sigma >= 0,
+            length(mu) == d, mu >= 0, r >= 0, T >= 0)
+  log.diffusion <- qnorm(u) * matrix(rep(sigma, n), ncol=d, byrow=TRUE) # (n,d)-matrix; or t(t(qnorm(u))*sigma)
+  log.drift <- (mu - sigma^2 / 2) * T # d-vector
+  log. <- matrix(rep(log.drift, n), ncol=d, byrow=TRUE) + log.diffusion # (n,d)-matrix
+  matrix(rep(S0, n), ncol=d, byrow=TRUE) * exp(log.) # S_t, t in 1,..,T; (n,d)-matrix
 }
 
 
 ### 2) Case Study ##############################################################
 
 ## Simulation parameters
-n <- 10^6 # Monte Carlo sample size
+n <- 10^5 # Monte Carlo sample size; TODO: choose carefully for Korobov!
 d <- 4 # dimension
 
 ## Stochastic process parameters
@@ -92,26 +78,30 @@ S0 <- rep(100, d) # initial stocks' levels
 K <- 1.1 # option strike
 N <- 1000 # option notional
 
-## Generates Uniforms using Quasi
-generator <- 17
-u.quasi <- korobov(n, d = d, generator = generator) # TODO randomize
+## Generates randomized Korobov's quasi-random sequence
+generator <- 76
+set.seed(271)
+u.quasi <- korobov(n, d = d, generator = generator, randomize=TRUE)
 ## => possibly copula-transform
 
-## Generates GBM from Quasi Samples
-S.quasi <- generate_GBM(u.quasi, S0, sigma, r, T)
+matplot(u.quasi[1:1000,]) # => TODO: structure???
 
-## Call options using the Quasi samples
-price.basketCall  <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "Call"))
-price.worstOfCall <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "Call"), method="worst")
-price.bestOfCall  <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "Call"), method="best")
+## Generates Geometric Brownian Motion from quasi-random sequence
+S.quasi <- rGeoBM(u.quasi, S0, sigma, r, T)
 
-## Put options using the Quasi samples
-price.basketPut  <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "Put"))
-price.worstOfPut <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "Put"), method="worst")
-price.bestOfPut  <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "Put"), method="best")
+## Call options using the quasi-random sequence
+basket.call  <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "call"))
+worst.of.call <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "call"), method="worst")
+## TODO: the same?
 
-## Clayton (CDM + MO) / Gumbel (MO) / FGM (both)
+## TODO: Mathieu, did you have an insurance example in mind? maybe a simple one which runs
+##       fast enough to be part the demo (like around max. 30s)
 
-
-
-## TODO: mathieu: insurance example
+## TODO: need to write a script (not this demo) for the following simulation study:
+## - QRNG: ghalton, sobol
+## - dimensions d: 5, 20
+## - copulas: Clayton (CDM + MO), t copula (CDM + "MO"/stochastic representation)
+## - Kendall's tau: 0.2, 0.5
+## - bootstrap replications: 25 (different randomizations => estimate variance)
+## - options: 'basket' and 'worst-of' (or 'best-of'?)
+## - a bunch of different 'n': 64 different n (for creating plots in 'n')

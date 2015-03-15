@@ -38,11 +38,11 @@ void korobov(int n, int d, int *generator, int randomize, double *res)
 	/* Randomization */
 	if(randomize == 1) {
 		GetRNGstate();
-		for(j=0; j<d; j++) {
+		for(j=0; j<d; j++){
 			U = unif_rand();
 			for(i=0; i<n; i++){
 				ij = j*n+i;
-				res[ij] = U;
+				res[ij] = res[ij] + U;
 				if(res[ij] > 1) res[ij] = res[ij] - 1.0;
 			}
 		}
