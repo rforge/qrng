@@ -1,1 +1,2 @@
 basket_option       Estimate the price of a basket put option
+test_functions      Test QRNGs based on well-known, adjustable test functions

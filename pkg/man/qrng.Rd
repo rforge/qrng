@@ -6,7 +6,7 @@
   Computing the following quasi-random sequences: Korobov, generalize Halton.
 }
 \usage{
-korobov(n, d, generator)
+korobov(n, d, generator, randomize=FALSE)
 ghalton(n, d, method=c("generalized", "halton"))
 }
 \arguments{
@@ -16,6 +16,8 @@ ghalton(n, d, method=c("generalized", "halton"))
     (in which case it is appropriately extended to length \eqn{d}). All numbers
     must be in \eqn{\{1,\dots,n\}}{{1,...,n}} and must be (coercible to)
     integers.}
+  \item{randomize}{A \code{\link{logical}} indicating whether the point
+    set should be randomized (by a vector of length \eqn{d}).}
   \item{method}{A \code{\link{character}} string indicating which
     sequence is generated, generalized Halton or (plain) Halton.}
 }
@@ -31,8 +33,9 @@ ghalton(n, d, method=c("generalized", "halton"))
   this quasi-random sequence (only basic sanity checks are
   conducted). For more details, see l'Ecuyer and Lemieux (2000).
 
-  For \eqn{d\ge360}{d>=360}, the generalized Halton sequences uses the
-  identity to TODO.
+  The generalized Halton sequence uses scrambling factors of 1 for
+  coordinates beyond \eqn{d>360}{d>360}; for those smaller than or equal
+  to 360, see Faure and Lemieux (2009).
 }
 \author{Marius Hofert}
 \references{
@@ -48,13 +51,21 @@ ghalton(n, d, method=c("generalized", "halton"))
 %% \seealso{
 %% }
 \examples{
-n <- 2^10
-d <- 4
-generator <- 17
+n <- 1021 # prime
+d <- 4 # dimension
+
+## Korobov's sequence
+generator <- 76
 u <- korobov(n, d=d, generator=generator)
 pairs(u, gap=0, pch=".", labels=as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))
 
+## randomized Korobov's sequence
+u <- korobov(n, d=d, generator=generator, randomize=TRUE)
+pairs(u, gap=0, pch=".", labels=as.expression(
+      sapply(1:d, function(j) bquote(italic(u[.(j)])))))
+
+## generalized Halton sequence (randomized by definition)
 u <- ghalton(n, d)
 pairs(u, gap=0, pch=".", labels=as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))

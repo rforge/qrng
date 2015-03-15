@@ -7,8 +7,8 @@
 #include <Rinternals.h>
 #include <Rmath.h>
 
-void korobov(int n, int d, int *generator, double *res);
-SEXP korobov_(SEXP n, SEXP d, SEXP generator);
+void korobov(int n, int d, int *generator, int randomize, double *res);
+SEXP korobov_(SEXP n, SEXP d, SEXP generator, SEXP randomize);
 
 #endif
 

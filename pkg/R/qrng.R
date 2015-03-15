@@ -6,10 +6,12 @@
 ##' @param d dimension
 ##' @param generator generator in {1,..,n-1}; either a vector of length d
 ##'        or a single number (which is appropriately extended)
+##' @param randomize logical indicating whether the point set should be
+##'        randomized (by one d-vector mod 1)
 ##' @return an (n, d)-matrix (an n-vector if d=1) containing the
 ##'         quasi-random sequence
 ##' @author Marius Hofert
-korobov <- function(n, d, generator)
+korobov <- function(n, d, generator, randomize=FALSE)
 {
     stopifnot(n >= 2, d >= 1, (l <- length(generator)) == 1 || l == d,
               1 <= generator, generator <= n-1, generator %% 1 == 0)
@@ -19,7 +21,7 @@ korobov <- function(n, d, generator)
     if(d > lim)
         stop("'d' has to be <= 2^31-1")
     if(l == 1) generator <- generator^(0:(d-1)) %% n # vectorize
-    u <- .Call(korobov_, n, d, generator)
+    u <- .Call(korobov_, n, d, generator, randomize)
     if(d == 1) as.vector(u) else u
 }
 

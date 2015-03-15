@@ -9,7 +9,7 @@
 
 
 static const R_CallMethodDef callMethods[] = {
-	{"korobov_", (DL_FUNC) &korobov_, 3},
+	{"korobov_", (DL_FUNC) &korobov_, 4},
 	{"ghalton_", (DL_FUNC) &ghalton_, 3},
 	{NULL, NULL, 0}
 };
