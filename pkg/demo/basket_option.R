@@ -32,10 +32,10 @@ payoff <- function(K, N, S0, S, type = c("call", "put"),
                  "basket" = {
                      rowMeans(t(t(S)/S0))
                  },
-                 "worst" = {
+                 "worst.of" = {
                      apply(t(t(S)/S0), 1, min)
                  },
-                 "best" = {
+                 "best.of" = {
                      apply(t(t(S)/S0), 1, max)
                  },
                  stop("Wrong 'method'"))
@@ -88,7 +88,7 @@ S.quasi <- rGeoBM(u.quasi, S0, sigma, r, T)
 
 ## Call options using the quasi-random sequence
 basket.call  <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "call"))
-worst.of.call <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "call"), method="worst")
+worst.of.call <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "call", method="worst.of"))
 ## TODO: the same?
 
 ## TODO: Mathieu, did you have an insurance example in mind? maybe a simple one which runs
