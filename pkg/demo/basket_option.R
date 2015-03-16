@@ -67,7 +67,7 @@ rGeoBM <- function(u, S0, sigma, mu, T)
 ### 2) Case Study ##############################################################
 
 ## Simulation parameters
-n <- 1e5 # Monte Carlo sample size; TODO: choose carefully for Korobov!
+n <- 1e5 # Monte Carlo sample size
 d <- 4 # dimension
 
 ## Stochastic process parameters
@@ -78,19 +78,10 @@ S0 <- rep(100, d) # initial stocks' levels
 K <- 1.1 # option strike
 N <- 1000 # option notional
 
-## Generates randomized Korobov's quasi-random sequence
-generator <- 76
+## Generates generalized Halton sequence
 set.seed(271)
-u.quasi <- korobov(n, d = d, generator = generator, randomize=TRUE)
+u.quasi <- ghalton(n, d = d)
 ## => possibly copula-transform
-
-if(FALSE) { # playground
-    s <- 1:5000
-    matplot(u.quasi[s,])
-    pairs(u.quasi[s,], gap=0, pch=".") # => TODO: structure???
-    s <- sample(1:1e5, size=5000)
-    pairs(u.quasi[s,], gap=0, pch=".")
-}
 
 ## Generates Geometric Brownian Motion from quasi-random sequence
 S.quasi <- rGeoBM(u.quasi, S0, sigma, r, T)
