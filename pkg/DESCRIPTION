@@ -16,6 +16,6 @@ Suggests:
 Enhances:
 License: GPL-2 | GPL-3
 URL: https://qrng.r-forge.r-project.org/
-NeedsCompilation: no
+NeedsCompilation: yes
 Repository: CRAN
 Date/Publication: 2014-03-25 15:26:50
