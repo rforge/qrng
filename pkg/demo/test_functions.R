@@ -165,10 +165,10 @@ abs_err <- function(n, B, d, family=c("Clayton", "Gumbel"), tau, test,
 ### 2) Simulation and analysis #################################################
 
 ## Parameters
-n <- seq(1e4, 2e5, by=1e4) # round(2*10^seq(3, 5, by=0.25))
-B <- 25
-rng <- c("ghalton", "sobol", "prng")
-sampling <- c("CDM", "MO")
+n <- seq(1e4, 2e5, by=1e4) # sample sizes
+B <- 25 # (bootstrap) replications
+rng <- c("ghalton", "sobol", "prng") # random number generators
+sampling <- c("CDM", "MO") # sampling methods
 family <- "Clayton" # Gumbel with MO takes too long due to numerical inversion of F for V
 d <- c(2, 10) # dimensions
 tau <- c(0.2, 0.5) # Kendall's tau
