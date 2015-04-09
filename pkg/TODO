@@ -1,12 +1,9 @@
-- implement generalized Halton in C
-- mention and *check* input for korobov: good 'n', 'd', 'generator'?
-- n should be a prime or a power of two
-- if n is a power of two, the generator has to be odd
-- the generator should be a primitive element mod n ()
-
 - create demo 'basket option'
-
-- Let G be a finite multiplicative group of integers. g in G is called primitive element
-  mod p if g is of order (p-1) mod p (i.e., the smallest positive number such
-  that g^<this number> = 1 is (p-1) mod p). Characterization: if and only if
-  {g^k: 0 <= k <= p-2} = multiplicative group mod p
+- create simulation study from demo (loop over bootstrap repetitions)
+- implement test functions in qrng:
+  1) function(u, alpha) rowsums(u^alpha)
+  2) sobold composed with Rosenblatt
+  3) Kendall's tau: 4*C(u)-1
+  [for comparing different construction methods of quasi copula dependent random numbers]
+- implement sampling for Clayton and t copula with method = c("sobol",
+  "ghalton", "none") and MO and CDM

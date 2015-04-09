@@ -95,10 +95,12 @@ worst.of.call <- exp(-r.*T) * mean(payoff(K, N, S0, S.quasi, type = "call", meth
 ##       fast enough to be part the demo (like around max. 30s)
 
 ## TODO: need to write a script (not this demo) for the following simulation study:
-## - QRNG: ghalton, sobol
+## - QRNG: ghalton, sobol, none
 ## - dimensions d: 5, 20
-## - copulas: Clayton (CDM + MO), t copula (CDM + "MO"/stochastic representation)
+## - copulas: Clayton, t
+## - construction methods: CDM, MO
 ## - Kendall's tau: 0.2, 0.5
 ## - bootstrap replications: 25 (different randomizations => estimate variance)
 ## - options: 'basket' and 'worst-of' (or 'best-of'?)
 ## - a bunch of different 'n': 64 different n (for creating plots in 'n')
+##   => generate for the largest sample size and then take sub-parts
