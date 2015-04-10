@@ -8,7 +8,7 @@ Authors@R: c(person(given = "Marius", family = "Hofert", role = c("aut", "cre"),
                     email = "marius.hofert@uwaterloo.ca"),
              person(given = "Christiane", family = "Lemieux", role = "aut",
                     email = "clemieux@uwaterloo.ca"))
-Author: Marius Hofert and Christiane Lemieux
+Author: Marius Hofert [aut, cre], Christiane Lemieux [aut]
 Maintainer: Marius Hofert <marius.hofert@uwaterloo.ca>
 Depends: R (>= 3.0.0)
 Imports:
