@@ -291,13 +291,13 @@ if(file.exists(file)) attach(file) else {
     for(i in seq_along(d)) { # dimension d
         for(j in seq_along(tau)) { # Kendall's tau
             test_Fau <- function(x)
-                test_Faure(x, alpha=rep(2, d[i]), family=family, tau=tau[j])
+                test_Faure(x, alpha=rep(1, d[i]), family=family, tau=tau[j])
             for(k in seq_along(rng)) { # rng.method
                 for(l in seq_along(sampling)) { # sampling.method
                     set.seed(271)
                     rt <- system.time(err[i,j,k,l,] <-
                         abs_err(n, B=B, d=d[i], family=family, tau=tau[j],
-                                test=test_Ken, rng.method=rng[k],
+                                test=test_Fau, rng.method=rng[k],
                                 sampling.method=sampling[l]))
                     cat(paste0("d=",d[i],", tau=",tau[j],", rng=",rng[k],", sampling=",
                                sampling[l],": Done in ", round(rt[3]), "s\n"))
