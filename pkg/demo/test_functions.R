@@ -85,7 +85,7 @@ test_Kendall <- function(x, family, tau) {
 test_Faure <- function(x, alpha, family, tau) {
     d <- ncol(x)
     theta <- iTau(getAcop(family), tau)
-    u <- rtrafo(x, cop=onacopulaL(family, nacList=list(theta, 1:d)), inverse=TRUE)
+    u <- rtrafo(x, cop=onacopulaL(family, nacList=list(theta, 1:d)), inverse=FALSE)
     alpha. <- matrix(rep(alpha, each=nrow(u)), ncol=d)
     apply((abs(4*u-2)+alpha.)/(1+alpha.), 1, prod)
 }
