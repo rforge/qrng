@@ -322,7 +322,7 @@ for(i in seq_along(d)) { # dimension d
         lines(n, err[i,j,2,2,], lty=mylty[4])
         lines(n, err[i,j,3,1,], lty=mylty[5])
         lines(n, err[i,j,3,2,], lty=mylty[6])
-        legend(130000, 4e-4, lty=mylty, bty="n",
+        legend(130000, if(i==2) { if(j==1) 4e-6 else 1e-5 } else 4e-4, lty=mylty, bty="n",
                legend=c("G. Halton; CDM", "G. Halton; MO", "Sobol; CDM", "Sobol; MO",
                "Monte Carlo; CDM", "Monte Carlo; MO"))
         if(doPDF) simsalapar::dev.off.pdf(file=file)
