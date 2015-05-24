@@ -103,7 +103,6 @@ test_Faure <- function(x, alpha, family, tau) {
 ##' @param rng.method the random number generating method
 ##' @param sampling.method the copula sampling method (Marshall--Olkin or
 ##'        conditional distribution method)
-##' @param ... additional arguments passed to sobol()
 ##' @return length(n)-vector of bootstrap-estimated mean absolute errors based
 ##'         on samples of size n
 ##' @author Marius Hofert
@@ -111,7 +110,7 @@ test_Faure <- function(x, alpha, family, tau) {
 ##'       -
 abs_err <- function(n, B, d, family=c("Clayton", "Gumbel"), tau, test,
                     rng.method=c("ghalton", "sobol", "prng"),
-                    sampling.method=c("MO", "CDM"), ...)
+                    sampling.method=c("MO", "CDM"))
 {
     stopifnot(n >= 1, d >= 2, B >= 1, 0 < tau, tau < 1, is.function(test))
     family <- match.arg(family)
@@ -122,6 +121,8 @@ abs_err <- function(n, B, d, family=c("Clayton", "Gumbel"), tau, test,
     res <- matrix(, nrow=B, ncol=length(n)) # (B, length(n))-matrix
     max.n <- max(n) # maximal n (for generating only one long sequence and 'picking out blocks')
     p <- if(sampling.method=="MO") d+1 else d
+    seed <- 271
+    if(rng.method!="sobol") set.seed(seed) # deal with seeding (for method "sobol", see below)
     for(b in 1:B) { # iterate over all bootstrap replications
 
         ## Generate (max(n), d)-matrix of U[0,1] samples
@@ -130,12 +131,20 @@ abs_err <- function(n, B, d, family=c("Clayton", "Gumbel"), tau, test,
                         ghalton(max.n, d=p)
                     },
                     "sobol" = {
-                        sobol(max.n, dim=p, scrambling=1)
+                        ## sobol() has the problem of reinitializing the seed
+                        ## every time... same values result
+                        ## => we set it on our own here
+                        sobol(max.n, dim=p, scrambling=1, seed=seed + 29 * (b-1)) # update seed
                     },
                     "prng" = {
                         matrix(runif(max.n*p), ncol=p)
                     },
                     stop("Wrong 'rng.method'"))
+        bad <- U < 0 & U > 1
+        if(any(bad)) {
+            warning("Adjusted U. It was partially outside [0,1] with range ", range(U[bad]))
+            U <- pmax(pmin(U, 1), 0)
+        }
 
         ## Build (max(n), d)-matrix of copula samples
         theta <- iTau(getAcop(family), tau) # convert tau to theta
@@ -192,7 +201,6 @@ if(file.exists(file)) attach(file) else {
         for(j in seq_along(tau)) { # Kendall's tau
             for(k in seq_along(rng)) { # rng.method
                 for(l in seq_along(sampling)) { # sampling.method
-                    set.seed(271)
                     rt <- system.time(err[i,j,k,l,] <-
                         abs_err(n, B=B, d=d[i], family=family, tau=tau[j],
                                 test=test_lin_pow, rng.method=rng[k],
@@ -243,7 +251,6 @@ if(file.exists(file)) attach(file) else {
                 test_Kendall(x, family=family, tau=tau[j])
             for(k in seq_along(rng)) { # rng.method
                 for(l in seq_along(sampling)) { # sampling.method
-                    set.seed(271)
                     rt <- system.time(err[i,j,k,l,] <-
                         abs_err(n, B=B, d=d[i], family=family, tau=tau[j],
                                 test=test_Ken, rng.method=rng[k],
@@ -294,7 +301,6 @@ if(file.exists(file)) attach(file) else {
                 test_Faure(x, alpha=rep(1, d[i]), family=family, tau=tau[j])
             for(k in seq_along(rng)) { # rng.method
                 for(l in seq_along(sampling)) { # sampling.method
-                    set.seed(271)
                     rt <- system.time(err[i,j,k,l,] <-
                         abs_err(n, B=B, d=d[i], family=family, tau=tau[j],
                                 test=test_Fau, rng.method=rng[k],
