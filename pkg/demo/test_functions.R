@@ -4,7 +4,6 @@
 ## estimating high-dimensional integrals by quasi-Monte Carlo methods"),
 ## Mathematics and Computers in Simulation, 62 (3--6), 255--263
 
-require(randtoolbox)
 require(qrng)
 require(copula)
 
@@ -121,8 +120,6 @@ abs_err <- function(n, B, d, family=c("Clayton", "Gumbel"), tau, test,
     res <- matrix(, nrow=B, ncol=length(n)) # (B, length(n))-matrix
     max.n <- max(n) # maximal n (for generating only one long sequence and 'picking out blocks')
     p <- if(sampling.method=="MO") d+1 else d
-    seed <- 271
-    if(rng.method!="sobol") set.seed(seed) # deal with seeding (for method "sobol", see below)
     for(b in 1:B) { # iterate over all bootstrap replications
 
         ## Generate (max(n), d)-matrix of U[0,1] samples
@@ -131,20 +128,12 @@ abs_err <- function(n, B, d, family=c("Clayton", "Gumbel"), tau, test,
                         ghalton(max.n, d=p)
                     },
                     "sobol" = {
-                        ## sobol() has the problem of reinitializing the seed
-                        ## every time... same values result
-                        ## => we set it on our own here
-                        sobol(max.n, dim=p, scrambling=1, seed=seed + 29 * (b-1)) # update seed
+                        sobol(max.n, d=d, randomize=TRUE)
                     },
                     "prng" = {
                         matrix(runif(max.n*p), ncol=p)
                     },
                     stop("Wrong 'rng.method'"))
-        bad <- U < 0 & U > 1
-        if(any(bad)) {
-            warning("Adjusted U. It was partially outside [0,1] with range ", range(U[bad]))
-            U <- pmax(pmin(U, 1), 0)
-        }
 
         ## Build (max(n), d)-matrix of copula samples
         theta <- iTau(getAcop(family), tau) # convert tau to theta
