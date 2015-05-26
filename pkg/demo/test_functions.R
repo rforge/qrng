@@ -128,12 +128,13 @@ abs_err <- function(n, B, d, family=c("Clayton", "Gumbel"), tau, test,
                         ghalton(max.n, d=p)
                     },
                     "sobol" = {
-                        sobol(max.n, d=d, randomize=TRUE)
+                        sobol(max.n, d=p, randomize=TRUE)
                     },
                     "prng" = {
                         matrix(runif(max.n*p), ncol=p)
                     },
                     stop("Wrong 'rng.method'"))
+        stopifnot(0 < U, U < 1, dim(U) == c(max.n, p)) # fail-safe programming
 
         ## Build (max(n), d)-matrix of copula samples
         theta <- iTau(getAcop(family), tau) # convert tau to theta
@@ -146,6 +147,7 @@ abs_err <- function(n, B, d, family=c("Clayton", "Gumbel"), tau, test,
                                rtrafo(U, cop=cop, inverse=TRUE)
                            },
                            stop("Wrong 'sampling.method'"))
+        stopifnot(0 < cop.data, cop.data < 1, dim(cop.data) == c(max.n, d)) # fail-safe programming
 
         ## Apply the test function to each line of cop.data and compute the absolute error
         err <- test(cop.data) - 1 # max(n)-vector; 1 = true value
