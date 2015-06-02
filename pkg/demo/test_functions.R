@@ -72,12 +72,12 @@ test_Kendall <- function(x, family, tau) {
 }
 
 ##' @title Test function (mapping copula data x to [0,1]^2 via Rosenblatt and
-##'        then applying a Faure-like transformation)
+##'        then applying Faure's g_1)
 ##' @param x (n, d) matrix of copula values in [0,1]
 ##' @param alpha weights
 ##' @param family Archimedean copula family
 ##' @param tau Kendall's tau
-##' @return f(\bm{u}) = \prod_{j=1}^d (1+alpha*(u_j-1/2)) where
+##' @return f(\bm{u}) = \prod_{j=1}^d (|4u_j-2| + \alpha_j) / (1+\alpha_j) where
 ##'         u_j = C(x_j | x_1,\dots, x_{j-1}) (u = Rosenblatt-transformed x)
 ##' @author Marius Hofert
 ##' @note No checking because of performance
@@ -85,7 +85,8 @@ test_Faure <- function(x, alpha, family, tau) {
     d <- ncol(x)
     theta <- iTau(getAcop(family), tau)
     u <- rtrafo(x, cop=onacopulaL(family, nacList=list(theta, 1:d)), inverse=FALSE)
-    apply((1+alpha*(u-0.5)), 1, prod)
+    alpha. <- matrix(rep(alpha, each=nrow(u)), ncol=d)
+    apply((abs(4*u-2)+alpha.)/(1+alpha.), 1, prod)
 }
 
 
@@ -169,12 +170,12 @@ B <- 25 # (bootstrap) replications
 rng <- c("ghalton", "sobol", "prng") # random number generators
 sampling <- c("CDM", "MO") # sampling methods
 family <- "Clayton" # Gumbel with MO takes too long due to numerical inversion of F for V
-d <- c(2, 10) # dimensions
+d <- c(5, 15) # dimensions
 tau <- c(0.2, 0.5) # Kendall's tau
 doPDF <- Sys.getenv("USER") == "mhofert" # logical indicating whether cropped PDF is produced
 
 ## Disclaimer
-cat(paste0("Note: This simulation takes a couple of minutes.\n"))
+cat(paste0("Note: This simulation may take a couple of minutes.\n"))
 
 
 ### 2.1) Test function test_linear_power() #####################################
@@ -218,7 +219,7 @@ for(i in seq_along(d)) { # dimension d
         lines(n, err[i,j,2,2,], lty=mylty[4])
         lines(n, err[i,j,3,1,], lty=mylty[5])
         lines(n, err[i,j,3,2,], lty=mylty[6])
-        legend(130000, 6e-4, lty=mylty, bty="n",
+        legend(130000, 5e-4, lty=mylty, bty="n",
                legend=c("G. Halton; CDM", "G. Halton; MO", "Sobol; CDM", "Sobol; MO",
                "Monte Carlo; CDM", "Monte Carlo; MO"))
         if(doPDF) simsalapar::dev.off.pdf(file=file)
@@ -268,7 +269,7 @@ for(i in seq_along(d)) { # dimension d
         lines(n, err[i,j,2,2,], lty=mylty[4])
         lines(n, err[i,j,3,1,], lty=mylty[5])
         lines(n, err[i,j,3,2,], lty=mylty[6])
-        legend(130000, 3.5e-4, lty=mylty, bty="n",
+        legend(130000, 2e-4, lty=mylty, bty="n",
                legend=c("G. Halton; CDM", "G. Halton; MO", "Sobol; CDM", "Sobol; MO",
                "Monte Carlo; CDM", "Monte Carlo; MO"))
         if(doPDF) simsalapar::dev.off.pdf(file=file)
@@ -318,7 +319,8 @@ for(i in seq_along(d)) { # dimension d
         lines(n, err[i,j,2,2,], lty=mylty[4])
         lines(n, err[i,j,3,1,], lty=mylty[5])
         lines(n, err[i,j,3,2,], lty=mylty[6])
-        legend(130000, if(i==2) { if(j==1) 4e-6 else 1e-5 } else 4e-4, lty=mylty, bty="n",
+        y.loc <- if(i==1 && j==1) 5e-4 else if(i==2 && j==2) 7e-4 else 6e-4
+        legend(130000, y.loc, lty=mylty, bty="n",
                legend=c("G. Halton; CDM", "G. Halton; MO", "Sobol; CDM", "Sobol; MO",
                "Monte Carlo; CDM", "Monte Carlo; MO"))
         if(doPDF) simsalapar::dev.off.pdf(file=file)
