@@ -73,8 +73,8 @@ test_Kendall <- function(x, family, tau) {
 
 ##' @title Test function (mapping copula data x to [0,1]^2 via Rosenblatt and
 ##'        then applying Faure's g_1)
-##' @param x (n, d) matrix of copula values in [0,1]
-##' @param alpha weights
+##' @param x (n, d)-matrix of copula values in [0,1]
+##' @param alpha d-vector of weights
 ##' @param family Archimedean copula family
 ##' @param tau Kendall's tau
 ##' @return f(\bm{u}) = \prod_{j=1}^d (|4u_j-2| + \alpha_j) / (1+\alpha_j) where
@@ -289,7 +289,7 @@ if(file.exists(file)) attach(file) else {
     for(i in seq_along(d)) { # dimension d
         for(j in seq_along(tau)) { # Kendall's tau
             test_Fau <- function(x)
-                test_Faure(x, alpha=0.25, family=family, tau=tau[j])
+                test_Faure(x, alpha=1:d[i], family=family, tau=tau[j])
             for(k in seq_along(rng)) { # rng.method
                 for(l in seq_along(sampling)) { # sampling.method
                     rt <- system.time(err[i,j,k,l,] <-
