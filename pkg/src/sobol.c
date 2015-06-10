@@ -22,8 +22,8 @@ void sobol(int n, int d, int randomize, double *res)
 	double U; /* temporal storage for a single element of point */
 	double recipd = 0.0;
 	unsigned int *lastpoint = NULL;
-	unsigned int randint, point; /* the int representation of U */
-	int rmaxcoeff = (int) ((sizeof(int) * 8));
+	unsigned long long int randint, point; /* the int representation of U */
+	int rmaxcoeff = 52;
 	double rmaxint = pow (2, rmaxcoeff);
 	double *rvector;
         unsigned int v[sobolMaxDim][sobolMaxCol];
@@ -93,7 +93,7 @@ void sobol(int n, int d, int randomize, double *res)
 			point = *(lastpoint+i);
 			U = *(rvector+i);
 			U *= rmaxint;
-			randint = (unsigned int) U;
+			randint = (unsigned long long int) U;
 			point = point ^ randint;
 			res[i*n] = ((double) point)/rmaxint;
 		}
@@ -114,7 +114,7 @@ void sobol(int n, int d, int randomize, double *res)
 				point = point << (rmaxcoeff - numcols);
 				U = *(rvector+i);
 				U *= rmaxint;
-				randint = (unsigned int) U;
+				randint = (unsigned long long int) U;
 				point = point ^ randint;
 				res[i*n+count+1] = ((double) point)/rmaxint;
 			}
