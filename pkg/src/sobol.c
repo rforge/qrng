@@ -71,20 +71,30 @@ void sobol(int n, int d, int randomize, double *res)
 			v[i][j] = v[i][j] << temp;
 		temp++;
 	}
-        /* v is now updated */
+        /* => v is now updated */
 
 	/* Generate a shift */
+	maxn =  ((unsigned int)(1 << numcols)); /* 2^numcols */
+	double dblmaxn = (double) maxn;
         if(randomize){
+		double u, bigu;
+		int iszero;
 		rvector = (double *) R_alloc (d, sizeof(double));
 		GetRNGstate();
-		for (i = 0; i < d; i++) { *(rvector+i) = unif_rand(); }
+		for (i = 0; i < d; i++) {
+			iszero = 1;
+			while(iszero == 1){
+				u = unif_rand();
+				bigu = u*dblmaxn;
+				if (floor(bigu)!=bigu) iszero = 0;
+			}
+			*(rvector+i) = u;
+		}
 		PutRNGstate();
 	}
 
         /* Compute the recipd */
-        maxn =  ((unsigned int)(1 << numcols));
-        recipd = ((double) ((unsigned int)(1 << numcols)));
-        recipd = ((double) (1.0 / recipd));
+        recipd = ((double) (1.0 / dblmaxn));
 
 	/* Init result (and randomization) */
         for(i=0; i<d; i++){
