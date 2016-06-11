@@ -105,8 +105,7 @@ test_Faure <- function(x, alpha, family, tau) {
 ##' @return length(n)-vector of bootstrap-estimated mean absolute errors based
 ##'         on samples of size n
 ##' @author Marius Hofert
-##' @note - Absolute error = relative error since test functions integrate to 1
-##'       -
+##' @note Absolute error = relative error since test functions integrate to 1
 abs_err <- function(n, B, d, family=c("Clayton", "Gumbel"), tau, test,
                     rng.method=c("ghalton", "sobol", "prng"),
                     sampling.method=c("MO", "CDM"))

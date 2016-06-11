@@ -7,9 +7,9 @@
   Computing Korobov, generalize Halton and Sobol quasi-random sequences.
 }
 \usage{
-korobov(n, d, generator, randomize=FALSE)
-ghalton(n, d, method=c("generalized", "halton"))
-sobol(n, d, randomize=FALSE)
+korobov(n, d, generator, randomize = FALSE)
+ghalton(n, d, method = c("generalized", "halton"))
+sobol(n, d, randomize = FALSE)
 }
 \arguments{
   \item{n}{Number \eqn{n} of points to be generated \eqn{\ge 2}{>= 2}.}
@@ -65,26 +65,26 @@ d <- 4 # dimension
 
 ## Korobov's sequence
 generator <- 76 # see l'Ecuyer and Lemieux
-u <- korobov(n, d=d, generator=generator)
-pairs(u, gap=0, pch=".", labels=as.expression(
+u <- korobov(n, d = d, generator = generator)
+pairs(u, gap = 0, pch = ".", labels = as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))
 
-## randomized Korobov's sequence
+## Randomized Korobov's sequence
 set.seed(271)
-u <- korobov(n, d=d, generator=generator, randomize=TRUE)
-pairs(u, gap=0, pch=".", labels=as.expression(
+u <- korobov(n, d = d, generator = generator, randomize = TRUE)
+pairs(u, gap = 0, pch = ".", labels = as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))
 
-## generalized Halton sequence (randomized by definition)
+## Generalized Halton sequence (randomized by definition)
 set.seed(271)
 u <- ghalton(n, d)
-pairs(u, gap=0, pch=".", labels=as.expression(
+pairs(u, gap = 0, pch = ".", labels = as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))
 
-## randomized Sobol sequence (with digital shift)
+## Randomized Sobol sequence (with digital shift)
 set.seed(271)
-u <- sobol(n, d, randomize=TRUE)
-pairs(u, gap=0, pch=".", labels=as.expression(
+u <- sobol(n, d, randomize = TRUE)
+pairs(u, gap = 0, pch = ".", labels = as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))
 }
 \keyword{distribution}
