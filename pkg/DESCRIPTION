@@ -1,5 +1,5 @@
 Package: qrng
-Version: 0.0-3
+Version: 0.0-4
 Encoding: UTF-8
 Title: (Randomized) Quasi-Random Number Generators
 Description: Functionality for generating (randomized) quasi-random numbers in

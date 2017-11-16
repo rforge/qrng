@@ -7,9 +7,9 @@
   Computing Korobov, generalize Halton and Sobol quasi-random sequences.
 }
 \usage{
-korobov(n, d, generator, randomize = FALSE)
-ghalton(n, d, method = c("generalized", "halton"))
-sobol(n, d, randomize = FALSE)
+korobov(n, d = 1, generator, randomize = FALSE)
+ghalton(n, d = 1, method = c("generalized", "halton"))
+sobol(n, d = 1, randomize = FALSE)
 }
 \arguments{
   \item{n}{Number \eqn{n} of points to be generated \eqn{\ge 2}{>= 2}.}

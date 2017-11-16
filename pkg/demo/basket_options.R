@@ -5,7 +5,7 @@ require(qrng)
 require(copula)
 
 
-### 1) Functions ###############################################################
+### 1 Functions ################################################################
 
 ##' @title Produces Samples of a d-dimensional Clayton Copula
 ##' @param u (n, d+1)-matrix of samples in [0,1]
@@ -105,9 +105,9 @@ payoff <- function(K, N, S0, S, type = c("call", "put"),
 }
 
 
-### 2) Case Study ##############################################################
+### 2 Case Study ###############################################################
 
-### 2.1) Define parameters #####################################################
+### 2.1 Define parameters ######################################################
 
 n <- 1e5 # Monte Carlo sample size
 d <- 4 # dimension
@@ -134,7 +134,7 @@ th.t <- iTau(ellipCopula(family.t, df=nu), tau) # corresponding parameter
 t.cop <- ellipCopula(family.t, param=th.t, dim=d, df=nu) # define copula object
 
 
-### 2.2) Sampling ##############################################################
+### 2.2 Sampling ###############################################################
 
 ## Uniform samples for CDM
 set.seed(271)
@@ -173,7 +173,7 @@ S.C.CDM. <- rGeoBM(U.C.CDM., S0=S0, mu=rep(r, d), sigma=sigma, T=T)
 S.C.MO.  <- rGeoBM(U.C.MO.,  S0=S0, mu=rep(r, d), sigma=sigma, T=T)
 
 
-### 2.3) Functional Calculation ################################################
+### 2.3 Functional Calculation #################################################
 
 erT <- exp(-r*T)
 
@@ -213,7 +213,7 @@ rm.C.CDM. <- risk.measures(S.C.CDM., alpha)
 rm.C.MO.  <- risk.measures(S.C.MO.,  alpha)
 
 
-### 2.4) Results ###############################################################
+### 2.4 Results ################################################################
 
 res <- array(, dim=c(4,2,2), dimnames=list(type=c("basket", "worst.of",
                                            paste0("VaR.", alpha), paste0("ES.", alpha)),

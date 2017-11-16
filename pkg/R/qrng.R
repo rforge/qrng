@@ -11,7 +11,7 @@
 ##' @return an (n, d)-matrix (an n-vector if d=1) containing the
 ##'         quasi-random sequence
 ##' @author Marius Hofert
-korobov <- function(n, d, generator, randomize=FALSE)
+korobov <- function(n, d = 1, generator, randomize=FALSE)
 {
     stopifnot(n >= 2, d >= 1, (l <- length(generator)) == 1 || l == d,
               1 <= generator, generator <= n-1, generator %% 1 == 0)
@@ -33,7 +33,7 @@ korobov <- function(n, d, generator, randomize=FALSE)
 ##' @return an (n, d)-matrix (an n-vector if d=1) containing the
 ##'         quasi-random sequence
 ##' @author Marius Hofert
-ghalton <- function(n, d, method=c("generalized", "halton"))
+ghalton <- function(n, d = 1, method=c("generalized", "halton"))
 {
     stopifnot(n >= 1, d >= 1)
     method <- match.arg(method)
@@ -54,7 +54,7 @@ ghalton <- function(n, d, method=c("generalized", "halton"))
 ##' @return an (n, d)-matrix (an n-vector if d=1) containing the
 ##'         quasi-random sequence
 ##' @author Marius Hofert
-sobol <- function(n, d, randomize=FALSE)
+sobol <- function(n, d = 1, randomize=FALSE)
 {
     stopifnot(n >= 1, d >= 1, is.logical(randomize))
     if(n > 2^31-1)
