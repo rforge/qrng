@@ -36,7 +36,7 @@ sobol(n, d = 1, randomize = FALSE)
     \item{ghalton()}{\code{n} must be \eqn{\le 2^{32}-1}{<= 2^32-1} and
       \code{d} must be \eqn{\le 360}{<= 360}.}
     \item{sobol()}{\code{n} must be \eqn{\le 2^{31}-1}{<= 2^31-1} and
-      \code{d} must be \eqn{\le 360}{<= 360}.}
+      \code{d} must be \eqn{\le 16510}{<= 16510}.}
   }
 
   The choice of parameters for \code{korobov()} is crucial for the quality of
