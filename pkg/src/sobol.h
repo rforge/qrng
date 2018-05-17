@@ -11,8 +11,8 @@
 #define sobolMaxDegree 17
 #define sobolMaxCol 32
 
-void sobol(int n, int d, int randomize, double *res);
-SEXP sobol_(SEXP n, SEXP d, SEXP randomize);
+void sobol(int n, int d, int randomize, double *res, int start);
+SEXP sobol_(SEXP n, SEXP d, SEXP randomize, SEXP start);
 
 /* Primitive polynomials (one for each dimension) */
 static int poly[sobolMaxDim] =
@@ -18364,9 +18364,6 @@ static int minit[sobolMaxDim-1][sobolMaxDegree] =
 {1, 3, 3, 3, 3, 3, 67, 195, 451, 451, 1475, 1475, 1475, 1475, 1475, 1475, 67011},
 {1, 3, 3, 3, 3, 3, 3, 131, 387, 899, 899, 899, 4995, 4995, 21379, 54147, 54147},
 {1, 3, 3, 3, 3, 3, 3, 131, 131, 131, 1155, 3203, 7299, 7299, 23683, 56451, 121987}};
-
-
-
 
 
 #endif

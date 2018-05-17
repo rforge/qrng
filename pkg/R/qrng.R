@@ -11,7 +11,7 @@
 ##' @return an (n, d)-matrix (an n-vector if d=1) containing the
 ##'         quasi-random sequence
 ##' @author Marius Hofert
-korobov <- function(n, d = 1, generator, randomize=FALSE)
+korobov <- function(n, d = 1, generator, randomize = FALSE)
 {
     stopifnot(n >= 2, d >= 1, (l <- length(generator)) == 1 || l == d,
               1 <= generator, generator <= n-1, generator %% 1 == 0)
@@ -33,7 +33,7 @@ korobov <- function(n, d = 1, generator, randomize=FALSE)
 ##' @return an (n, d)-matrix (an n-vector if d=1) containing the
 ##'         quasi-random sequence
 ##' @author Marius Hofert
-ghalton <- function(n, d = 1, method=c("generalized", "halton"))
+ghalton <- function(n, d = 1, method = c("generalized", "halton"))
 {
     stopifnot(n >= 1, d >= 1)
     method <- match.arg(method)
@@ -51,18 +51,19 @@ ghalton <- function(n, d = 1, method=c("generalized", "halton"))
 ##' @param d dimension
 ##' @param randomize logical indicating whether a digital shift should be
 ##'        included
+##' @param start starting point in the sequence, >= 1; start = 1 gives the 1st point
 ##' @return an (n, d)-matrix (an n-vector if d=1) containing the
 ##'         quasi-random sequence
 ##' @author Marius Hofert
-sobol <- function(n, d = 1, randomize=FALSE)
+sobol <- function(n, d = 1, randomize = FALSE, start = 1)
 {
-    stopifnot(n >= 1, d >= 1, is.logical(randomize))
+    stopifnot(n >= 1, d >= 1, is.logical(randomize), start >= 1)
     if(n > 2^31-1)
         stop("'n' must be <= 2^31-1")
     if(d > 16510)
         stop("'d' must be <= 16510")
     ## sobol_ <- NULL # to make CRAN check happy (for some reason not required here)
-    u <- .Call(sobol_, n, d, randomize)
+    u <- .Call(sobol_, n, d, randomize, start)
     if(d == 1) as.vector(u) else u
 }
 

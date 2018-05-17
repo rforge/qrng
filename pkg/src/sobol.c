@@ -10,10 +10,11 @@
  * @param randomize logical (here: integer) indicating whether a digital
  *        shift should be included
  * @param res pointer to the result matrix
+ * @start starting point in the sequence, >= 1; start = 1 gives the 1st point
  * @return void
  * @author Marius Hofert based on C. Lemieux's RandQMC
  */
-void sobol(int n, int d, int randomize, double *res)
+void sobol(int n, int d, int randomize, double *res, int start)
 {
         int i, count, numcols, j, k;
 	int newv, temp, degree;
@@ -33,7 +34,7 @@ void sobol(int n, int d, int randomize, double *res)
         /* Initialize the V array */
 
 	/* First the first dimension */
-	numcols = ceil(log(n)/log(2));
+	numcols = ceil(log(n + start - 1)/log(2));
 	for (i = 0; i < numcols; i++)
 		v[0][i] = 1;
 
@@ -110,7 +111,7 @@ void sobol(int n, int d, int randomize, double *res)
 	}
 
 	/* Main loop */
-        for(count=0; count<n-1; count++){
+        for(count=start-1; count<n + start-2; count++){
 		column=0;
 		while ((count >> column) & 0x1) /* '>>' = bitwise right shift by column-many bits and fill with 0s from the left; hexadecimal value of 1 */
 			column++;
@@ -126,9 +127,9 @@ void sobol(int n, int d, int randomize, double *res)
 				U *= rmaxint;
 				randint = (unsigned long long int) U;
 				point = point ^ randint;
-				res[i*n+count+1] = ((double) point)/rmaxint;
+				res[i*n+count+2-start] = ((double) point)/rmaxint;
 			}
-			else res[i*n+count+1] = ((double) *(lastpoint+i)) * recipd;
+			else res[i*n+count+2-start] = ((double) *(lastpoint+i)) * recipd;
 		}
 	}
 }
@@ -139,22 +140,24 @@ void sobol(int n, int d, int randomize, double *res)
  * @param d dimension
  * @param randomize logical indicating whether a digital shift should be
           included
+ * @param start starting point in the sequence, >= 1; start = 1 gives the 1st point
  * @return (n, d)-matrix
  * @author Marius Hofert
  */
-SEXP sobol_(SEXP n, SEXP d, SEXP randomize)
+SEXP sobol_(SEXP n, SEXP d, SEXP randomize, SEXP start)
 {
 	/* Input parameters */
 	int n_ = asInteger(n); /* numeric(1) */
 	int d_ = asInteger(d); /* numeric(1) */
 	int randomize_ = asLogical(randomize); /* 0 (= FALSE), 1 (= TRUE) */
+	int start_ = asInteger(start); /* numeric(1) */
 
 	/* Create result object */
 	SEXP res = PROTECT(allocMatrix(REALSXP, n_, d_)); /* (n,d)-matrix */
 	double *res_ = REAL(res); /* pointer to the values of res */
 
 	/* Main */
-	sobol(n_, d_, randomize_, res_);
+	sobol(n_, d_, randomize_, res_, start_);
 
 	/* Return */
 	UNPROTECT(1); /* clean-up */
