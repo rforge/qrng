@@ -9,7 +9,7 @@
 \usage{
 korobov(n, d = 1, generator, randomize = FALSE)
 ghalton(n, d = 1, method = c("generalized", "halton"))
-sobol(n, d = 1, randomize = FALSE, start = 1)
+sobol  (n, d = 1, randomize = FALSE, skip = 0)
 }
 \arguments{
   \item{n}{Number \eqn{n} of points to be generated \eqn{\ge 2}{>= 2}.}
@@ -22,8 +22,8 @@ sobol(n, d = 1, randomize = FALSE, start = 1)
     set should be randomized (for \code{sobol()}: a digital shift).}
   \item{method}{A \code{\link{character}} string indicating which
     sequence is generated, generalized Halton or (plain) Halton.}
-  \item{start}{starting point in the sequence, greater than or equal to
-    1 (1 means the first point in the sequence.)}
+  \item{skip}{number of initial terms in the sequence that are skipped
+    (\code{skip = 0} means the sequence starts with the origin).}
 }
 \value{
   \code{korobov()} and \code{ghalton()} return an

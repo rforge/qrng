@@ -51,19 +51,20 @@ ghalton <- function(n, d = 1, method = c("generalized", "halton"))
 ##' @param d dimension
 ##' @param randomize logical indicating whether a digital shift should be
 ##'        included
-##' @param start starting point in the sequence, >= 1; start = 1 gives the 1st point
+##' @param skip number of initial terms in the sequence that are skipped
+##'        (skip = 0 means the sequence starts with the origin)
 ##' @return an (n, d)-matrix (an n-vector if d=1) containing the
 ##'         quasi-random sequence
 ##' @author Marius Hofert
-sobol <- function(n, d = 1, randomize = FALSE, start = 1)
+sobol <- function(n, d = 1, randomize = FALSE, skip = 0)
 {
-    stopifnot(n >= 1, d >= 1, is.logical(randomize), start >= 1)
+    stopifnot(n >= 1, d >= 1, is.logical(randomize), skip >= 0)
     if(n > 2^31-1)
         stop("'n' must be <= 2^31-1")
     if(d > 16510)
         stop("'d' must be <= 16510")
     ## sobol_ <- NULL # to make CRAN check happy (for some reason not required here)
-    u <- .Call(sobol_, n, d, randomize, start)
+    u <- .Call(sobol_, n, d, randomize, skip)
     if(d == 1) as.vector(u) else u
 }
 
