@@ -175,6 +175,7 @@ void sobol(int n, int d, int randomize, double *res, int skip)
 		//res[i*n] = 0.0;
 		if(randomize){
 			point = *(lastpoint+i);
+                        point = point << (rmaxcoeff - numcols);
 			U = *(rvector+i);
 			U *= rmaxint;
 			randint = (unsigned long long int) U;
