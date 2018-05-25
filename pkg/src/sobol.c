@@ -89,7 +89,7 @@ void sobol(int n, int d, int randomize, double *res, int skip)
         /* Initialize the V array */
 
 	/* First the first dimension */
-	numcols = ceil(log(n + skip -1)/log(2));
+	numcols = ceil(log(n + skip)/log(2));
 	for (i = 0; i < numcols; i++)
 		v[0][i] = 1;
 
