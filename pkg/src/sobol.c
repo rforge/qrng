@@ -1,16 +1,46 @@
 /* C function for computing a Sobol sequence **********************************/
 
 #include "sobol.h"
-
-// for the binray to gray function
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 
-// function to convert binary string
-// to gray string
+/**
+ * @title Convert Binary String to Gray String
+ * @param n1 TODO
+ * @param size TODO
+ * @param b TODO
+ * @author Christiane Lemieux
+ */
+void bintogray(int n1, int size, int *b)
+{
+	int a[size], k = 1, i = 0;
+	while(n1 != 0) /* converting number to its binary equivalent */
+	{
+		a[i] = n1 % 2;
+		n1 /= 2;
+		i++;
+	}
+	/* Printing binary equivalent
+	 * printf("\nThe binary code of the given number is:");
+	 * for(i = size-1; i >=0; i--)
+	 * printf("%d", a[i]); */
+	/* Gray code conversion */
+	b[0] = a[size-1];
+	for(i = size-1; i >= 0; i--)
+	{
+		if(a[i] == 0 && a[i-1] == 0)
+			b[k] = 0;
+		if(a[i] == 1 && a[i-1] == 1)
+			b[k] = 0;
+		if(a[i] == 0 && a[i-1] == 1)
+			b[k] = 1;
+		if(a[i] == 1 && a[i-1] == 0)
+			b[k] = 1;
+		k++;
+	}
+}
 
 /**
  * @title Generate n Points of a d-dimensional Sobol Sequence
@@ -22,44 +52,8 @@
  * @skip  number of initial terms in the sequence to be skipped (skip = 0 means
  *        that the sequence starts at the origin)
  * @return void
- * @author Marius Hofert based on C. Lemieux's RandQMC
+ * @author Marius Hofert based on Christiane's Lemieux's RandQMC
  */
-
-// C++ program for Binary To Gray
-// and Gray to Binary conversion
-
-void bintogray(int n1, int size, int *b)
-{
-
-  int a[size],k=1,i=0;
-
-	 while(n1!=0)   /* converting number to its binary equivalent */
-	 {  a[i]=n1 % 2;
-		 n1/=2;
-		 i++;
-	 }
-	/* printing binary equivalent */
-	 //printf("\nThe binary code of the given number is :");
-	 //for(i=size-1;i>=0;i--)
-	 //printf("%d",a[i]);
-	 /* gray code conversion */
-	 b[0]=a[size-1];
-
-	 for(i=size-1;i>=0;i--)
-	 {  if(a[i]==0 && a[i-1]==0)
-		 b[k]=0;
-		 if(a[i]==1 && a[i-1]==1)
-		 b[k]=0;
-		 if(a[i]==0 && a[i-1]==1)
-		 b[k]=1;
-		 if(a[i]==1 && a[i-1]==0)
-		 b[k]=1;
-		 k++;
-
-	 }
-
-}
-
 void sobol(int n, int d, int randomize, double *res, int skip)
 {
   int i, count, numcols, j, k, initcount;
@@ -78,13 +72,13 @@ void sobol(int n, int d, int randomize, double *res, int skip)
         lastpoint = (unsigned int *) R_alloc (d, sizeof(unsigned int));
 
 	sizeskip=0;
-	if(skip>0)
+	if(skip>0) {
 	  sizeskip = ceil(log(skip+1)/log(2));
-	gskip = (int *) R_alloc(sizeskip, sizeof(int));
-
+	  gskip = (int *) R_alloc(sizeskip, sizeof(int));
+	  memset (gskip,0, sizeof(int) * sizeskip);
+	}
 
         memset (lastpoint, 0, sizeof(unsigned int) * d);
-	memset (gskip,0, sizeof(int) * sizeskip);
 
         /* Initialize the V array */
 
@@ -154,9 +148,9 @@ void sobol(int n, int d, int randomize, double *res, int skip)
 
 
 	/* Init result (and randomization) */
-	//initcount=skip-1;
+	/* initcount=skip-1; */
 
-	//if(skip == 0){
+	/* if(skip == 0) { */
 
 	if(skip>0){
 	  bintogray(skip,sizeskip, gskip);
@@ -172,7 +166,7 @@ void sobol(int n, int d, int randomize, double *res, int skip)
 	                   *(lastpoint+i) = *(lastpoint+i) ^ v[i][j];
 		   }
 		}
-		//res[i*n] = 0.0;
+		/* res[i*n] = 0.0; */
 		if(randomize){
 			point = *(lastpoint+i);
                         point = point << (rmaxcoeff - numcols);
@@ -184,7 +178,7 @@ void sobol(int n, int d, int randomize, double *res, int skip)
 		}
 		else res[i*n] =  ((double) *(lastpoint+i)) * recipd;
            }
-	  //}
+	  /* } */
 
 	/* Main loop */
         for(count=initcount; count<n + skip-1; count++){
@@ -208,13 +202,7 @@ void sobol(int n, int d, int randomize, double *res, int skip)
 			else res[i*n+count+1-skip] = ((double) *(lastpoint+i)) * recipd;
 		}
 	}
-	}
-
-
-
-
-
-
+}
 
 /**
  * @title R Interface to C for Generating a Sobol Sequence
