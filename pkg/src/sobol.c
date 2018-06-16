@@ -8,9 +8,9 @@
 
 /**
  * @title Convert Binary String to Gray String
- * @param n1 TODO (>= 1)
- * @param size TODO (>= 1)
- * @param b TODO
+ * @param n1 positive integer (>= 1)
+ * @param size number of digits of the binary representation of n1 (>= 1)
+ * @param b Gray-code converted binary representation of n1
  * @author Christiane Lemieux
  */
 void bintogray(int n1, int size, int *b)
@@ -18,10 +18,9 @@ void bintogray(int n1, int size, int *b)
     int a[size], i = 0;
     while(n1 != 0) /* converting number to its binary equivalent */
     {
-        if(i > size - 1) { /* TODO: can this happen? */
-            printf("i > size - 1 in bintogray(); abort")
-            exit(1);
-        }
+        /* if(i > size - 1) {  */
+        /*     Rprintf("i > size - 1 in bintogray(); abort\n"); */
+        /* } */
         a[i] = n1 % 2; /* mod operator (remainder after int division) */
         n1 /= 2;
         i++;
@@ -33,7 +32,7 @@ void bintogray(int n1, int size, int *b)
     /* Gray code conversion */
     b[0] = a[size-1];
     int k = 1;
-    for(i = size-1; i >= 1; i--) /* TODO: this was i >= 0 */
+    for(i = size-1; i >= 1; i--)
     {
         if(a[i] == 0 && a[i-1] == 0)
             b[k] = 0;
