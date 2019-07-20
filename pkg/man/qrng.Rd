@@ -4,12 +4,13 @@
 \alias{sobol}
 \title{Compute Quasi-Random Sequences}
 \description{
-  Computing Korobov, generalize Halton and Sobol quasi-random sequences.
+  Computing Korobov, generalize Halton and Sobol' quasi-random sequences.
 }
 \usage{
-korobov(n, d = 1, generator, randomize = FALSE)
+korobov(n, d = 1, generator, randomize = c("none", "shift"))
 ghalton(n, d = 1, method = c("generalized", "halton"))
-sobol  (n, d = 1, randomize = FALSE, skip = 0)
+sobol  (n, d = 1, randomize = c("none", "digital.shift", "Owen", "Faure.Tezuka",
+                                "Owen.Faure.Tezuka"), seed, skip = 0, ...)
 }
 \arguments{
   \item{n}{Number \eqn{n} of points to be generated \eqn{\ge 2}{>= 2}.}
@@ -18,12 +19,32 @@ sobol  (n, d = 1, randomize = FALSE, skip = 0)
     (in which case it is appropriately extended to length \eqn{d}). All numbers
     must be in \eqn{\{1,\dots,n\}}{{1,...,n}} and must be (coercible to)
     integers.}
-  \item{randomize}{A \code{\link{logical}} indicating whether the point
-    set should be randomized (for \code{sobol()}: a digital shift).}
+  \item{randomize}{A \code{\link{character}} string indicating the type
+    of randomization for the point set
+    \describe{
+      \item{"none"}{no randomization.}
+      \item{"shift"}{uniform random variate modulo 1.}
+      \item{"digital.shift"}{a digital shift.}
+      \item{"Owen", "Faure.Tezuka","Owen.Faure.Tezuka"}{calls
+	\code{\link{sobol}()} from package \pkg{randtoolbox} with
+        \code{scrambling} being 1, 2 and 3, respectively.}
+  }}
   \item{method}{A \code{\link{character}} string indicating which
     sequence is generated, generalized Halton or (plain) Halton.}
-  \item{skip}{number of initial terms in the sequence that are skipped
-    (\code{skip = 0} means the sequence starts with the origin).}
+  \item{seed}{if provided, an integer used within
+    \code{\link{set.seed}()} for the non-scrambling \code{randomize}
+    methods (so \code{"none"} or \code{"digital.shift"}) or passed
+    to the underlying \code{\link{sobol}()} from package
+    \pkg{randtoolbox} for the scrambling methods. If not provided,
+    the non-scrambling methods respect a global \code{\link{set.seed}()}
+    but scrambling methods do not (they then use 4711 as default);
+    see \code{\link{sobol}()} from package \pkg{randtoolbox}.}
+  \item{skip}{number of initial points in the sequence to be skipped
+    (\code{skip = 0} means the sequence starts with at the origin).
+    Note that for the scrambling methods this simply computes \code{n +
+      skip} points and omits the first \code{skip}-many.}
+  \item{\dots}{additional arguments passed to \code{\link{sobol}()}
+    from package \pkg{randtoolbox}.}
 }
 \value{
   \code{korobov()} and \code{ghalton()} return an
@@ -37,7 +58,8 @@ sobol  (n, d = 1, randomize = FALSE, skip = 0)
     \item{korobov()}{\code{n},\code{d} must be \eqn{\le 2^{31}-1}{<= 2^31-1}.}
     \item{ghalton()}{\code{n} must be \eqn{\le 2^{32}-1}{<= 2^32-1} and
       \code{d} must be \eqn{\le 360}{<= 360}.}
-    \item{sobol()}{\code{n} must be \eqn{\le 2^{31}-1}{<= 2^31-1} and
+    \item{sobol()}{if \code{randomize = "none"} or \code{randomize =
+      "digital.shift"}, \code{n} must be \eqn{\le 2^{31}-1}{<= 2^31-1} and
       \code{d} must be \eqn{\le 16510}{<= 16510}.}
   }
 
@@ -77,7 +99,7 @@ pairs(u, gap = 0, pch = ".", labels = as.expression(
 
 ## Randomized Korobov's sequence
 set.seed(271)
-u <- korobov(n, d = d, generator = generator, randomize = TRUE)
+u <- korobov(n, d = d, generator = generator, randomize = "shift")
 pairs(u, gap = 0, pch = ".", labels = as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))
 
@@ -87,9 +109,17 @@ u <- ghalton(n, d)
 pairs(u, gap = 0, pch = ".", labels = as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))
 
-## Randomized Sobol sequence (with digital shift)
+## Randomized Sobol' sequence (with digital shift)
 set.seed(271)
-u <- sobol(n, d, randomize = TRUE)
+u <- sobol(n, d, randomize = "digital.shift")
+pairs(u, gap = 0, pch = ".", labels = as.expression(
+      sapply(1:d, function(j) bquote(italic(u[.(j)])))))
+
+## Randomized Sobol' sequence (with Owen scrambling)
+## Note: - This is calling randtoolbox::sobol(, scrambling = 1, seed = ...),
+##       - The seed needs to be passed on directly in order to be respected
+##         (a global set.seed() isn't)
+u <- sobol(n, d, randomize = "Owen", seed = 271)
 pairs(u, gap = 0, pch = ".", labels = as.expression(
       sapply(1:d, function(j) bquote(italic(u[.(j)])))))
 
@@ -98,11 +128,11 @@ pairs(u, gap = 0, pch = ".", labels = as.expression(
 f <- function(n)
 {
     set.seed(271)
-    a <- sobol(2*n, randomize = TRUE)
+    a <- sobol(2*n, randomize = "digital.shift")
     set.seed(271)
-    b1 <- sobol(n, randomize = TRUE)
+    b1 <- sobol(n, randomize = "digital.shift")
     set.seed(271)
-    b2 <- sobol(n, randomize = TRUE, skip = n)
+    b2 <- sobol(n, randomize = "digital.shift", skip = n)
     all(all.equal(apply(cbind(a, c(b1, b2)), 1, diff), rep(0, 2*n)))
 }
 stopifnot(sapply(1:10, f)) # check for n = 1, ..., 10
@@ -112,15 +142,15 @@ stopifnot(sapply(1:10, f)) # check for n = 1, ..., 10
 ## Drawing all points at once (works, of course)
 n <- 32
 set.seed(5)
-U.2n <- sobol(2*n, d = 2, randomize = TRUE)
+U.2n <- sobol(2*n, d = 2, randomize = "digital.shift")
 plot(U.2n, main = "All points generated at once",
      xlab = expression(U[1]), ylab = expression(U[2]))
 
 ## Drawing successively with the same seed (typically the right approach)
 set.seed(5)
-U.n.1 <- sobol(n, d = 2, randomize = TRUE)
+U.n.1 <- sobol(n, d = 2, randomize = "digital.shift")
 set.seed(5) # => same seed
-U.n.2 <- sobol(n, d = 2, randomize = TRUE, skip = n)
+U.n.2 <- sobol(n, d = 2, randomize = "digital.shift", skip = n)
 U.2n.same.seed <- rbind(U.n.1, U.n.2)
 plot(U.2n.same.seed,
      main = "Drawing successively, with the same seed",
@@ -129,9 +159,9 @@ stopifnot(all.equal(U.2n, U.2n.same.seed)) # sanity check
 
 ## Drawing successively but with different seeds (typically the wrong approach)
 set.seed(5)
-U.n.1 <- sobol(n, d = 2, randomize = TRUE, skip = 0)
+U.n.1 <- sobol(n, d = 2, randomize = "digital.shift", skip = 0)
 set.seed(22)
-U.n.2 <- sobol(n, d = 2, randomize = TRUE, skip = n)
+U.n.2 <- sobol(n, d = 2, randomize = "digital.shift", skip = n)
 U.2n.different.seed <- rbind(U.n.1, U.n.2)
 plot(U.2n.different.seed,
      main = "Drawing successively, with different seeds",

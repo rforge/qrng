@@ -1,5 +1,15 @@
 useDynLib(qrng, .registration = TRUE)
 
+
+### Imports ####################################################################
+
+importFrom("methods", "hasArg")
+importFrom("randtoolbox", sobol)
+importFrom("utils", "tail")
+
+
+### Exports ####################################################################
+
 export("korobov",
        "ghalton",
        "sobol")
