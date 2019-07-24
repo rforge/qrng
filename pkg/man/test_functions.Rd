@@ -78,7 +78,8 @@ d <- 4
 set.seed(271)
 u <- sobol(n, d, randomize = "Owen") # Sobol' randomized with Owen scrambling
 mean(sum_of_squares(u)) # estimate of E(3(sum_{j=1}^d U_j^2)/d)
-mean(sobol_g(u)) # estimate of E(<Sobol's g function>)
+if(packageVersion("copula") >= "0.999-20")
+    mean(sobol_g(u)) # estimate of E(<Sobol's g function>)
 mean(exceedance(qnorm(u))) # estimate of E(<exceedance indicator over q>) = P(X > q)
 }
 \keyword{utilities}
