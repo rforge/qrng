@@ -11,7 +11,7 @@ Authors@R: c(person(given = "Marius", family = "Hofert", role = c("aut", "cre"),
 Author: Marius Hofert [aut, cre], Christiane Lemieux [aut]
 Maintainer: Marius Hofert <marius.hofert@uwaterloo.ca>
 Depends: R (>= 3.0.0)
-Imports: methods, randtoolbox, utils
+Imports: methods, randtoolbox, utils, copula
 Suggests:
 Enhances:
 License: GPL-2 | GPL-3

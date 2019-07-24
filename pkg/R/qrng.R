@@ -68,6 +68,8 @@ sobol <- function(n, d = 1, randomize = c("none", "digital.shift", "Owen",
 {
     stopifnot(n >= 1, d >= 1, skip >= 0)
     has.seed <- hasArg(seed)
+    if(is.logical(randomize))
+        randomize <- if(randomize) "digital.shift" else "none" # backwards compatibility
     randomize <- match.arg(randomize)
     switch(randomize,
            "none" =, "digital.shift" = {

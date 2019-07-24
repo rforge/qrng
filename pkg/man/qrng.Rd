@@ -28,7 +28,11 @@ sobol  (n, d = 1, randomize = c("none", "digital.shift", "Owen", "Faure.Tezuka",
       \item{"Owen", "Faure.Tezuka","Owen.Faure.Tezuka"}{calls
 	\code{\link{sobol}()} from package \pkg{randtoolbox} with
         \code{scrambling} being 1, 2 and 3, respectively.}
-  }}
+      }
+      If \code{randomize} is a \code{\link{logical}}, then
+      it is interpreted as \code{"none"} if \code{FALSE}
+      and \code{"digital.shift"} if \code{TRUE}.
+  }
   \item{method}{A \code{\link{character}} string indicating which
     sequence is generated, generalized Halton or (plain) Halton.}
   \item{seed}{if provided, an integer used within
