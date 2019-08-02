@@ -92,6 +92,7 @@ sobol  (n, d = 1, randomize = c("none", "digital.shift", "Owen", "Faure.Tezuka",
 %% \seealso{
 %% }
 \examples{
+\dontrun{
 n <- 1021 # prime
 d <- 4 # dimension
 
@@ -170,5 +171,6 @@ U.2n.different.seed <- rbind(U.n.1, U.n.2)
 plot(U.2n.different.seed,
      main = "Drawing successively, with different seeds",
      xlab = expression(U[1]), ylab = expression(U[2]))
+}
 }
 \keyword{distribution}

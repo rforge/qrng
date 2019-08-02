@@ -18487,7 +18487,7 @@ void sobol(int n, int d, int randomize, double *res, int skip)
             while(iszero == 1){
                 u = unif_rand();
                 bigu = u*dblmaxn;
-                if (floor(bigu)!=bigu) iszero = 0;
+                if (floor(bigu) != bigu) iszero = 0;
             }
             *(rvector+i) = u;
         }
