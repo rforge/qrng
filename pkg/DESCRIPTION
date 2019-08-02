@@ -12,7 +12,7 @@ Author: Marius Hofert [aut, cre], Christiane Lemieux [aut]
 Maintainer: Marius Hofert <marius.hofert@uwaterloo.ca>
 Depends: R (>= 3.0.0)
 Imports: methods, randtoolbox, utils, copula
-Suggests:
+Suggests: qrmtools
 Enhances:
 License: GPL-2 | GPL-3
 NeedsCompilation: yes
