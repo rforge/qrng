@@ -18565,22 +18565,22 @@ void sobol(int n, int d, int randomize, double *res, int skip)
  * @return (n, d)-matrix
  * @author Marius Hofert
  */
-SEXP sobol_(SEXP n, SEXP d, SEXP randomize, SEXP skip)
+SEXP sobol_(SEXP n_, SEXP d_, SEXP randomize_, SEXP skip_)
 {
     /* Input parameters */
-    int n_ = asInteger(n); /* numeric(1) */
-    int d_ = asInteger(d); /* numeric(1) */
-    int randomize_ = asLogical(randomize); /* 0 (= FALSE), 1 (= TRUE) */
-    int skip_ = asInteger(skip); /* numeric(1) */
+    int n = asInteger(n_); /* numeric(1) */
+    int d = asInteger(d_); /* numeric(1) */
+    int randomize = asLogical(randomize_); /* 0 (= FALSE), 1 (= TRUE) */
+    int skip = asInteger(skip_); /* numeric(1) */
 
     /* Create result object */
-    SEXP res = PROTECT(allocMatrix(REALSXP, n_, d_)); /* (n,d)-matrix */
-    double *res_ = REAL(res); /* pointer to the values of res */
+    SEXP res_ = PROTECT(allocMatrix(REALSXP, n, d)); /* (n,d)-matrix; see 5.9.4 in WRE */
+    double *res = REAL(res_); /* pointer to the values of res */
 
     /* Main */
-    sobol(n_, d_, randomize_, res_, skip_);
+    sobol(n, d, randomize, res, skip);
 
     /* Return */
     UNPROTECT(1); /* clean-up */
-    return res;
+    return res_;
 }

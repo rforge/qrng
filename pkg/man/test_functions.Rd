@@ -108,8 +108,7 @@ mean(exceedance(X, q = qnorm(0.99))) # fixed threshold q
 mean(exceedance(X, p = 0.99)) # empirically estimated marginal p-quantiles as thresholds
 
 ## Compute 99% expected shortfall for the sum
-mean(exceedance(X, p = 0.99, method = "sum.given.sum.exceeds")) # version 1
-library(qrmtools)
-ES_np(X, level = 0.99) # version 2
+mean(exceedance(X, p = 0.99, method = "sum.given.sum.exceeds"))
+## Or use ES_np(X, level = 0.99) from 'qrmtools'
 }
 \keyword{utilities}
