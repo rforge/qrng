@@ -22,7 +22,8 @@ sum_of_squares <- function(u)
 ##' @author Marius Hofert
 ##' @note - See Radovic, Sobol, Tichy (1996, "Quasi-Monte Carlo Methods for
 ##'         Numerical Integration: Comparison of Different Low Discrepancy
-##'         Sequences"
+##'         Sequences" and Faure and Lemieux (2008, "Generalized Halton
+##'         Sequences in 2008: A Comparative Study")
 ##'       - If you want an estimator of E(<test function>) call mean(sobol_g())
 sobol_g <- function(u, copula = indepCopula(dim = ncol(u)), alpha = 1:ncol(u), ...)
 {
@@ -30,7 +31,7 @@ sobol_g <- function(u, copula = indepCopula(dim = ncol(u)), alpha = 1:ncol(u), .
         stop('Your version of \'copula\' is not sufficient. Consider updating via install.packages("copula", repos = "http://R-Forge.R-project.org")')
     v <- cCopula(u, copula = copula, ...)
     a <- rep(alpha, each = nrow(v))
-    apply((abs(4 * v - 1) + a) / (1 + a), 1, prod)
+    apply((abs(4 * v - 2) + a) / (1 + a), 1, prod)
 }
 
 ##' @title Computing Indicators of Rows Exceeding a Threshold
